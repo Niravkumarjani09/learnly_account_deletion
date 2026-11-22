@@ -1,0 +1,18 @@
+{
+  "name": "learnly-user-manager",
+  "version": "1.0.0",
+  "description": "Zero-dependency Vercel Web App for deleting registered users from Firebase Authentication and Firestore",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "learnly",
+    "firebase-authentication",
+    "play-store-account-deletion",
+    "vercel"
+  ],
+  "author": "Niravkumar Jani",
+  "license": "MIT"
+}

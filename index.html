@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learnly - Firebase User Deletion Tool</title>
+  <!-- Google Fonts & Tailwind CSS CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              500: '#5956E9',
+              600: '#4F46E5',
+              700: '#4338CA',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <!-- Frontend Application Logic -->
+  <script src="app.js" defer></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Ambient Glow Background -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 -right-32 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 left-1/3 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Top Navbar -->
+  <header class="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-purple-600 flex items-center justify-center shadow-lg shadow-brand-500/30 text-white font-extrabold text-lg">
+          L
+        </div>
+        <div>
+          <span class="text-xl font-bold tracking-tight text-white">Learnly</span>
+          <span class="text-xs px-2 py-0.5 ml-2 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">Firebase Tool</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div id="connectionStatus" class="flex items-center space-x-2 text-xs font-medium px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Firebase Connected (<span class="font-mono">learnly-a90fb</span>)</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col justify-center space-y-6">
+
+    <!-- Header Hero -->
+    <div class="text-center space-y-2">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+        Delete Registered User
+      </h1>
+      <p class="text-slate-400 text-sm sm:text-base max-w-lg mx-auto">
+        Enter a registered user's email ID below. The tool verifies if the user genuinely exists in Firebase and allows permanent deletion.
+      </p>
+    </div>
+
+    <!-- PRIMARY ACTION CARD: Input Box + Delete User Button Only -->
+    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-500 via-purple-500 to-pink-500"></div>
+
+      <div class="space-y-5">
+        <div>
+          <label for="emailInput" class="block text-sm font-semibold text-slate-200 mb-2">
+            User Email ID
+          </label>
+
+          <!-- Input field with Beside Button Layout -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                </svg>
+              </div>
+              <input 
+                type="email" 
+                id="emailInput" 
+                placeholder="Enter registered email (e.g. nirav@gmail.com)" 
+                class="w-full pl-11 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition shadow-inner font-medium"
+                autocomplete="off"
+              />
+            </div>
+
+            <!-- Delete User Button (Beside Input) -->
+            <button 
+              id="btnDeleteUser" 
+              type="button" 
+              class="sm:w-auto px-7 py-3.5 bg-red-600 hover:bg-red-500 active:bg-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-600/30 flex items-center justify-center space-x-2 transition cursor-pointer text-sm sm:text-base flex-shrink-0"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span>Delete User</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Validation Status Box (Shown when email is entered) -->
+        <div id="statusBox" class="hidden transition-all duration-300">
+          <!-- Populated dynamically via app.js -->
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div id="alertBox" class="hidden rounded-xl p-4 text-sm font-medium transition-all duration-300">
+          <!-- Populated dynamically via app.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Clear Guide & System Notice -->
+    <div class="bg-slate-900/40 border border-slate-800/80 rounded-xl p-4 text-xs text-slate-400 space-y-1.5 text-center sm:text-left">
+      <div class="font-semibold text-slate-300 text-xs flex items-center justify-center sm:justify-start space-x-1.5">
+        <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Validation Rules:</span>
+      </div>
+      <p class="text-slate-400">
+        • This page only permits deleting users who have genuinely registered and exist in the Firebase Firestore <span class="font-mono text-slate-300">users</span> collection.
+      </p>
+      <p class="text-slate-400">
+        • If an email is not registered in Firebase, the system will notify you and prevent deletion.
+      </p>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/60 py-6 text-center text-xs text-slate-500">
+    <p>Learnly Mobile &amp; Web Platform • Marwadi University CSE Department</p>
+    <p class="mt-1">Developed by Niravkumar Pranavkumar Jani • Guided by Prof. Jigar Dave</p>
+  </footer>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden p-4">
+    <div class="bg-slate-900 border border-slate-700 max-w-md w-full rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <div class="text-center space-y-2">
+        <h3 class="text-lg font-bold text-white">Confirm User Deletion</h3>
+        <p class="text-xs text-slate-300">
+          Are you sure you want to permanently delete this registered user from Firebase?
+        </p>
+        <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 font-mono text-sm text-red-400 font-semibold break-all" id="modalUserEmail">
+          user@example.com
+        </div>
+      </div>
+      <div class="flex space-x-3 pt-2">
+        <button id="modalBtnCancel" class="flex-1 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-white font-medium text-sm transition">
+          Cancel
+        </button>
+        <button id="modalBtnConfirm" class="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-500 rounded-xl text-white font-bold text-sm shadow-lg shadow-red-600/30 transition">
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
